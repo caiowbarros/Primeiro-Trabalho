@@ -1,0 +1,424 @@
+<!-- MIT License
+
+Copyright (c) 2018 Packt
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE. -->
+
+<!--Este código é um reprodução, alteração ou extensão de parte dos códigos que podem ser obtidos em
+https://github.com/PacktPublishing/Real-Time-3D-Graphics-with-WebGL-2/blob/master/LICENSE  
+sob a licença acima especificada.
+--><html>
+
+    <head>
+        <title>Drawing canvas dat-gui</title>
+        <link rel="shortcut icon" type="image/png" href="./common/images/favicon.png" />
+    
+        <style type="text/css">
+        canvas {
+            border: 1px dotted black;
+        }
+        .inline-block-child {
+            display: inline-block;
+        }
+        </style>
+    </head>
+    
+    <body>
+    
+        <canvas id="canvas" width="1200" height="600">
+        Your browser does not support the HTML5 canvas element.
+        </canvas>
+        <!--
+        <div class='parent'>
+                <div class='child inline-block-child'>
+                    <p id="cursor_pos">Position: (0,0)</p>
+                </div>
+                <div class='child inline-block-child'>
+                    <button id = "color_box" style="background-color:red; padding: 15px 32px"></button>
+                </div>
+        </div>
+        -->
+        
+    <script type="text/javascript" src="./common/lib/dat.gui.js"></script> 
+    <script type="text/javascript" src="./common/lib/gl-matrix.js"></script>  
+    <script type="text/javascript" src="./common/js/utils.js"></script>
+    <script type="text/javascript" src="./shape.js"></script>
+    <script type="text/javascript" src="./event_listeners.js"></script>
+    
+    <!-- vertex Shader -->
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        #version 300 es
+        precision mediump float;
+
+        // Supplied vertex position attribute
+        in vec3 aVertexPosition;
+
+        void main(void) {
+        // Simply set the position in clipspace coordinates
+        gl_Position = vec4(aVertexPosition, 1.0);
+        }
+    </script>
+
+    <!-- fragment Shader -->
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        #version 300 es
+        precision mediump float;
+
+        // Color that is the result of this shader
+        out vec4 fragColor;
+        
+        void main(void) {
+        // Set the result as red
+        fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }
+    </script>
+
+    <script>
+    
+        function render(canvas,shapeList){
+            gl = utils.getGLContext(canvas);
+            gl.clearColor(0, 128, 128, 1);
+            shapeList.draw(gl);
+        }
+    
+        function createGUI(info,tools,file,properties,interaction,canvas){
+            var gui = new dat.GUI();
+            
+            var infoFolder = gui.addFolder('Info');
+            infoFolder.addColor(info, 'color').listen();
+            infoFolder.add(info, 'position').listen();
+    
+            var toolsFolder = gui.addFolder('Tools');
+            toolsFolder.add(tools,'draw');
+            toolsFolder.add(tools,'delete');
+            toolsFolder.add(tools,'clear');
+            toolsFolder.add(tools,'pick');
+            toolsFolder.add(tools,'move');
+            
+            var fileFolder = gui.addFolder('FileTools');
+            fileFolder.add(file,'save');
+            fileFolder.add(file,'load');
+
+            var propertiesFolder = gui.addFolder('Properties');
+            var colorController = propertiesFolder.addColor(properties,'foregroundColor');
+            var borderColorController = propertiesFolder.addColor(properties,'borderColor');
+            var pointSizeController = propertiesFolder.add(properties,'pointSize',1,100);
+            var lineWidthController = propertiesFolder.add(properties,'lineWidth',1,50);
+            var primitiveController = propertiesFolder.add(properties,'primitiveType',['point','line','circle','rectangle','polygon','free']);
+            
+            // Callback chamada quando o tipo de primitiva e selecionado
+            primitiveController.onChange(
+        
+                function(value){
+
+                    removeAllListeners(canvas,interaction);
+
+                    if (value == 'point'){
+                        primitiveType = PrimitiveType.POINT;
+                        interaction.eventListeners.click = listeners.pointCreationMouseClick;
+                        interaction.eventListeners.move = listeners.mouseMove;
+                    }
+                    else if (value == 'line'){
+                        primitiveType = PrimitiveType.LINE;
+                        interaction.eventListeners.click = listeners.lineSegmentCreationMouseClick;
+                        interaction.eventListeners.move = listeners.mouseMove;
+                    }
+                    else if (value == 'circle'){
+                        primitiveType = PrimitiveType.CIRCLE;
+                        interaction.eventListeners.click = listeners.circleCreationMouseClick;
+                        interaction.eventListeners.move = listeners.mouseMove;
+                    }
+                    else if (value == 'rectangle'){
+                        primitiveType = PrimitiveType.RECTANGLE;
+                        interaction.eventListeners.click = listeners.rectangleCreationMouseClick;
+                        interaction.eventListeners.move = listeners.mouseMove;
+
+                    }
+                    else if (value == 'polygon'){
+                        primitiveType = PrimitiveType.POLYGON;
+                        interaction.eventListeners.click = listeners.polygonCreationMouseClick;
+                        interaction.eventListeners.move = listeners.mouseMove;                    
+                    }
+                    else if (value == 'free'){
+                        primitiveType = PrimitiveType.FREE;
+                        interaction.eventListeners.click = listeners.freeDrawingCreationMouseClick;;
+                        interaction.eventListeners.move = listeners.freeDrawingCreationMouseMove;
+
+                    }
+    
+                    addAllListeners(canvas,interaction);
+                } 
+            );
+
+            
+            colorController.onChange(
+                function(value){
+                    properties.color = value;
+                    var shape = shapeList.selectedShape;
+                    if (shape == undefined){
+                        return;
+                    }         
+                    var color = getColor(properties.foregroundColor);
+                    shape.color = color;
+                    render(canvas,shapeList);
+
+                }
+            );
+
+
+            borderColorController.onChange(
+                function(value){
+                    properties.borderColor = value;
+                    var shape = shapeList.selectedShape;
+                    if (shape == undefined){
+                        return;
+                    }         
+                    var color = getColor(properties.borderColor);
+                    shape.borderColor = color;
+                    render(canvas,shapeList);
+
+                }
+            );
+    
+            infoFolder.open();
+            propertiesFolder.open();
+            toolsFolder.open();
+            fileFolder.open();
+
+            return gui;
+        
+        }
+    
+        function init(){
+            
+            canvas = utils.getCanvas('canvas');
+            // Add event listeners 
+            
+            interaction.eventListeners.click = listeners.pointCreationMouseClick;
+            interaction.eventListeners.move = listeners.mouseMove;
+            interaction.eventListeners.mouseUp = listeners.mouseUp;
+            interaction.eventListeners.mouseDown = listeners.mouseDown;
+
+            canvas.addEventListener('mouseup',interaction.eventListeners.mouseUp,false);
+            canvas.addEventListener('mousedown',interaction.eventListeners.mouseDown,false);
+            canvas.addEventListener('mousemove',interaction.eventListeners.move, false);
+            canvas.addEventListener('click', interaction.eventListeners.click, false);
+
+            const vertexShader = getShader('vertex-shader');
+            const fragmentShader = getShader('fragment-shader');
+
+            program = gl.createProgram();
+            gl.attachShader(program, vertexShader);
+            gl.attachShader(program, fragmentShader);
+            gl.linkProgram(program);
+
+            if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+                console.error('Could not initialize shaders');
+            }
+
+            gl.useProgram;
+            program.aVertexPosition = gl.getAttribLocation(program, 'aVertexPosition');
+
+            render(canvas,shapeList);
+        }
+
+        function getShader(id) {
+            const script = document.getElementById(id);
+            const shaderString = script.text.trim();
+
+            let shader;
+            if (script.type === 'x-shader/x-vertex') {
+                shader = gl.createShader(gl.VERTEX_SHADER);
+            } else if (script.type === 'x-shader/x-fragment') {
+                shader = gl.createShader(gl.FRAGMENT_SHADER);
+            } else {
+                return null;
+            }
+
+            gl.shaderSource(shader, shaderString);
+            gl.compileShader(shader);
+
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                console.error(gl.getShaderInfoLog(shader));
+                return null;
+            }
+
+            return shader;
+        }
+    
+    
+        Info = function(){
+            this.color = [0,0,0];
+            this.position = "Position (0,0)";
+        }
+
+        FileTools = function(){
+            this.save = function(){
+                var a = document.createElement("a");
+                a.href = URL.createObjectURL(
+                             new Blob([JSON.stringify(shapeList, null, 2)], { type: "text/plain"})
+                         );
+                a.setAttribute("download", "data.txt");
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+
+
+  
+            this.load = function(){
+
+                fetch('/SimpleDrawing/data.txt')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("HTTP error " + response.status);
+                }
+                return response.json();
+                })
+                .then(json => {
+                    shapeList.load(json);
+                    render(canvas,shapeList);
+                })
+                .catch(function () {
+                    this.dataError = true;
+                })
+        
+            }
+        }
+    
+        Tools = function(){
+            this.draw = function(){                        
+                            interaction.mode = InteractionMode.DRAW; 
+                            var canvas = document.getElementById("canvas");
+                            removeAllListeners(canvas,interaction);
+                      
+                            switch (primitiveType) {
+                                case PrimitiveType.POINT: 
+                                    interaction.eventListeners.click = listeners.pointCreationMouseClick;
+                                    interaction.eventListeners.move = listeners.mouseMove;
+                                break;
+                                case PrimitiveType.LINE:
+                                    interaction.eventListeners.click = listeners.lineSegmentCreationMouseClick;
+                                    interaction.eventListeners.move = listeners.mouseMove;
+                                break;
+                                case PrimitiveType.CIRCLE:
+                                    interaction.eventListeners.click = listeners.circleCreationMouseClick;
+                                    interaction.eventListeners.move = listeners.mouseMove;
+                                break;
+                                case PrimitiveType.RECTANGLE:
+                                    interaction.eventListeners.click = listeners.rectangleCreationMouseClick;
+                                    interaction.eventListeners.move = listeners.mouseMove;
+                                break;
+
+                                case PrimitiveType.POLYGON:
+                                    interaction.eventListeners.click = listeners.polygonCreationMouseClick;
+                                    interaction.eventListeners.move = listeners.mouseMove;
+                                break;
+
+                                case PrimitiveType.FREE:
+                                    interaction.eventListeners.click = listeners.freeDrawingCreationMouseClick;;
+                                    interaction.eventListeners.move = listeners.freeDrawingCreationMouseMove;
+                                break;
+                            }
+                            interaction.eventListeners.mouseup = listeners.mouseUp;
+                            interaction.eventListeners.mousedown = listeners.mouseDown;
+                            interaction.eventListeners.dblClick = undefined;
+                            addAllListeners(canvas,interaction);
+
+
+                        };
+
+            this.clear = function(){
+                shapeList.list.length = 0;
+                render(canvas,shapeList);
+            }
+
+            this.delete = function(){
+                shapeList.delete(shapeList.selectedShape);
+                render(canvas,shapeList);
+            }
+    
+            this.pick = function(){
+                interaction.mode = InteractionMode.PICK;
+                var canvas = document.getElementById("canvas");
+                removeAllListeners(canvas,interaction);
+                interaction.eventListeners.click = listeners.pickMouseClick;
+                interaction.eventListeners.move = listeners.mouseMove;
+                interaction.eventListeners.mouseup = listeners.mouseUp;
+                interaction.eventListeners.mousedown = listeners.mouseDown;
+                interaction.eventListeners.dblClick = undefined;
+                addAllListeners(canvas,interaction);
+
+            }
+
+            this.move = function(){
+                interaction.mode = InteractionMode.TRANSLATE;
+                var canvas = document.getElementById("canvas");
+                removeAllListeners(canvas,interaction);
+                interaction.eventListeners.click = undefined;
+                interaction.eventListeners.move = listeners.translationMouseMove;
+                interaction.eventListeners.mousedown = listeners.translationMouseDown;
+                interaction.eventListeners.mouseup = listeners.translationMouseUp;
+                interaction.eventListeners.dblClick = undefined;
+                addAllListeners(canvas,interaction);
+            }
+
+        }
+    
+        Properties = function(){
+            this.foregroundColor = [0,0,0];
+            this.borderColor = [0,0,0];
+            this.pointSize = 8;
+            this.lineWidth = 2;
+            this.primitiveType = 'point';
+        }
+    
+
+        var canvas = document.getElementById("canvas");
+        var cursor_pos = document.getElementById("cursor_pos");
+        var color_box = document.getElementById("color_box");
+
+        var primitiveType = PrimitiveType.POINT;
+        var shapeList = new ShapeList();
+        var info = new Info();
+        var tools = new Tools();  
+        var file = new FileTools();
+        var properties = new Properties();
+        const InteractionMode = {NONE:1,DRAW:2,PICK:3,TRANSLATE:4};
+        var interaction = {mode:InteractionMode.DRAW, 
+                           eventListeners:{click:undefined,
+                                           move:undefined,
+                                           mouseup:undefined,
+                                           mousedown:undefined,
+                                           dblclick:undefined
+                                        }
+                        };
+        var gui = createGUI(info,tools,file,properties,interaction,canvas);
+        
+        var listeners = new create_listeners();
+
+        let gl, program;
+        var scene = new Scene(shapeList);
+
+        window.onload = init()
+        </script>
+    
+    
+    </body>
+    </html>
