@@ -120,7 +120,7 @@ function createGUI(info, tools, file, properties, interaction, canvas) {
       switch (primitiveType) {
         case "point":
           interaction.eventListeners.click = listeners.pointCreationMouseClick;
-          interaction.eventListeners.move = listeners.mouseMove;
+          //interaction.eventListeners.move = listeners.mouseMove;
           break;
         case "rectangle":
           interaction.eventListeners.click = listeners.rectangleCreationMouseClick;

@@ -108,35 +108,35 @@ function removeAllListeners(canvas, interaction) {
     }
 
     this.rectangleCreationMouseClick = function rectangleCreationMouseClick(event) {
-      /*
-      var offsetLeft = canvas.offsetLeft;
-      var offsetTop = canvas.offsetTop;
+        var offsetLeft = canvas.offsetLeft;
+        var offsetTop = canvas.offsetTop;
 
-      var x = event.pageX - offsetLeft,
-          y = event.pageY - offsetTop;
+        var x = event.pageX - offsetLeft,
+            y = event.pageY - offsetTop;
 
-      var color = getColor(properties.foregroundColor);
-      var borderColor = getColor(properties.borderColor);
+        // var color = getColor(properties.foregroundColor);
+        // var borderColor = getColor(properties.borderColor);
 
-      var width = properties.lineWidth;
+        // var width = properties.lineWidth;
 
-      var id = shapeList.size;
-      var rectangle = new Rectangle(id, PrimitiveType.RECTANGLE, color, borderColor, x, y, x, y, width);
-      shapeList.push(rectangle);
+        // var id = shapeList.size;
+        // var rectangle = new Rectangle(id, PrimitiveType.RECTANGLE, color, borderColor, x, y, x, y, width);
+        rectangle = new Rectangle(gl, program);
+        // shapeList.push(rectangle);
 
-      removeAllListeners(canvas, interaction);
-      interaction.eventListeners.click = listeners.rectangleCloseMouseClick;
-      interaction.eventListeners.move = listeners.rectangleCreationMouseMove;
-      interaction.eventListeners.mouseup = listeners.mouseUp;
-      interaction.eventListeners.mousedown = listeners.mouseDown;
-      interaction.eventListeners.dblClick = undefined;
-
-      addAllListeners(canvas, interaction);
-      */
-
+        removeAllListeners(canvas, interaction);
+        interaction.eventListeners.click = listeners.rectangleCloseMouseClick;
+        interaction.eventListeners.move = listeners.rectangleCreationMouseMove;
+        interaction.eventListeners.mouseup = listeners.mouseUp;
+        interaction.eventListeners.mousedown = listeners.mouseDown;
+        interaction.eventListeners.dblClick = undefined;
+        addAllListeners(canvas, interaction);
+      
+        /*
       var rectangle = new Rectangle(gl, program);
       rectangle.initBuffer();
       rectangle.draw(primitiveType);
+      */
     }
 
     this.rectangleCloseMouseClick = function rectangleCloseMouseClick(event) {
@@ -157,7 +157,6 @@ function removeAllListeners(canvas, interaction) {
       interaction.eventListeners.mouseup = listeners.mouseUp;
       interaction.eventListeners.mousedown = listeners.mouseDown;
       interaction.eventListeners.dblClick = undefined;
-
       addAllListeners(canvas, interaction);
     }
 
