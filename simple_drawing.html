@@ -33,6 +33,7 @@
     void main(void) {
       // Simply set the position in clipspace coordinates
       gl_Position = vec4(aVertexPosition, 1.0);
+      gl_PointSize = 1.0;
     }
   </script>
 
@@ -159,6 +160,7 @@
                                         dblclick: undefined}};
     var gui = createGUI(info, tools, file, properties, interaction, canvas);
     var listeners = new create_listeners();
+    var scene = new Scene();
 
     // Call init once the webpage has loaded
     window.onload = init;

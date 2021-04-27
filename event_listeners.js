@@ -91,6 +91,26 @@ function removeAllListeners(canvas, interaction) {
       render(canvas, shapeList);
     }
 
+    this.pointCreationMouseClick = function pointCreationMouseClick(event) {
+      var offsetLeft = canvas.offsetLeft;
+      var offsetTop = canvas.offsetTop;
+
+      var x = event.pageX - offsetLeft,
+          y = event.pageY - offsetTop;
+      
+      // var color = getColor(properties.foregroundColor);
+      // var borderColor = getColor(properties.borderColor);
+
+      var id = scene.shapeList.size;
+      // var point = new Point(id,PrimitiveType.POINT,color,borderColor,x,y,properties.pointSize);
+      // shapeList.push(point);
+      // render(canvas, shapeList);
+
+      var point = new Point(id, gl, program);
+      scene.push(point);
+      scene.render();
+    }
+
     this.rectangleCreationMouseMove = function rectangleCreationMouseMove(event) {
       /*
       var offsetLeft = canvas.offsetLeft;
@@ -121,9 +141,9 @@ function removeAllListeners(canvas, interaction) {
 
       // var width = properties.lineWidth;
 
-      // var id = shapeList.size;
+      var id = scene.shapeList.size;
       // var rectangle = new Rectangle(id, PrimitiveType.RECTANGLE, color, borderColor, x, y, x, y, width);
-      var rectangle = new Rectangle(gl, program, x, y);
+      var rectangle = new Rectangle(id, gl, program, x, y);
       // shapeList.push(rectangle);
 
       //removeAllListeners(canvas, interaction);
@@ -134,8 +154,8 @@ function removeAllListeners(canvas, interaction) {
       //interaction.eventListeners.dblClick = undefined;
       //addAllListeners(canvas, interaction);
         
-      rectangle.initBuffer();
-      rectangle.draw(primitiveType);
+      scene.push(rectangle);
+      scene.render();
       
     }
 
@@ -179,35 +199,33 @@ function removeAllListeners(canvas, interaction) {
     }
 
     this.triangleCreationMouseClick = function triangleCreationMouseClick(event) {
-      /*
       var offsetLeft = canvas.offsetLeft;
       var offsetTop = canvas.offsetTop;
 
       var x = event.pageX - offsetLeft,
           y = event.pageY - offsetTop;
 
-      var color = getColor(properties.foregroundColor);
-      var borderColor = getColor(properties.borderColor);
+      // var color = getColor(properties.foregroundColor);
+      // var borderColor = getColor(properties.borderColor);
 
-      var width = properties.lineWidth;
+      // var width = properties.lineWidth;
 
-      var id = shapeList.size;
-      var triangle = new Triangle(id, PrimitiveType.TRIANGLE, color, borderColor, x, y, x, y, width);
-      shapeList.push(triangle);
+      var id = scene.shapeList.size;
+      // var triangle = new Triangle(id, PrimitiveType.TRIANGLE, color, borderColor, x, y, x, y, width);
+      // shapeList.push(triangle);
 
-      removeAllListeners(canvas, interaction);
-      interaction.eventListeners.click = listeners.rectangleCloseMouseClick;
-      interaction.eventListeners.move = listeners.rectangleCreationMouseMove;
-      interaction.eventListeners.mouseup = listeners.mouseUp;
-      interaction.eventListeners.mousedown = listeners.mouseDown;
-      interaction.eventListeners.dblClick = undefined;
+      // removeAllListeners(canvas, interaction);
+      // interaction.eventListeners.click = listeners.rectangleCloseMouseClick;
+      // interaction.eventListeners.move = listeners.rectangleCreationMouseMove;
+      // interaction.eventListeners.mouseup = listeners.mouseUp;
+      // interaction.eventListeners.mousedown = listeners.mouseDown;
+      // interaction.eventListeners.dblClick = undefined;
 
-      addAllListeners(canvas, interaction);
-      */
+      // addAllListeners(canvas, interaction);
 
-      var triangle = new Triangle(gl, program);
-      triangle.initBuffer();
-      triangle.draw(primitiveType);
+      var triangle = new Triangle(id, gl, program);
+      scene.push(triangle);
+      scene.render();
     }
     
     this.triangleCloseMouseClick = function triangleCloseMouseClick(event) {

@@ -1,4 +1,23 @@
 class Scene {
+    constructor() {
+        this.shapeList = [];
+    }
+
+    push(shape) {
+        this.shapeList.push(shape);
+    }
+    
+    render() {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+        for (var i=0; i<this.shapeList.length; i++) {
+            this.shapeList[i].initBuffer();
+            this.shapeList[i].draw(this.shapeList[i].primitiveType);
+        }
+    }
+}
+
+class Shape {
     constructor(gl, program) {
         this.VAO;
         this.VBO;
@@ -37,12 +56,14 @@ class Scene {
 
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), gl.STATIC_DRAW);
         switch (type) {
-            case "rectangle":
-                gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
-            case "point":
+            case 'point':
                 gl.drawElements(gl.POINTS, this.indices.length, gl.UNSIGNED_SHORT, 0);
-            case "triangle":
+            case 'rectangle':
                 gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
+                //gl.drawArrays(gl.TRIANGLES, this.vertices[0], this.vertices.length);
+            case 'triangle':
+                gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
+                //gl.drawArrays(gl.TRIANGLES, this.vertices[0], this.vertices.length);
             default:
                 break;
         }  
@@ -58,38 +79,55 @@ class Scene {
 
 }
 
-class Point extends Scene {
-    constructor(gl, program) {
+class Point extends Shape {
+    constructor(id, gl, program) {
         super(gl, program);
 
+        this.id = id;
         this.vertices = [0, 0, 0];
         this.indices = [0];
+        this.primitiveType = 'point';
     } 
 }
 
-class Rectangle extends Scene {
-    constructor(gl, program, x, y) {
+class Rectangle extends Shape {
+    constructor(id, gl, program, x, y) {
         super(gl, program);
 
+        this.id = id;
+        /*this.vertices = [
+            -0.5,  0.5, 0,
+            -0.5, -0.5, 0,
+             0.5, -0.5, 0,
+             0.5,  0.5, 0
+        ];*/
         this.vertices = [
-            x-0.5, y+0.5, 0,
-            x-0.5, y-0.5, 0,
-            x+0.5, y-0.5, 0,
-            x+0.5, y+0.5, 0
+            x, y,
+            -0.5, -0.5,
+             0.5, -0.5,
+             0.5,  0.5
         ];
         this.indices = [0, 1, 2, 0, 2, 3];
+        this.primitiveType = 'rectangle';
     }
 }
 
-class Triangle extends Scene {
-    constructor(gl, program) {
+class Triangle extends Shape {
+    constructor(id, gl, program) {
         super(gl, program);
 
+        this.id = id;
+        /*this.vertices = [
+            -0.25,  0.25, 0,
+            -0.25, -0.25, 0,
+             0.25, -0.25, 0
+        ];*/
         this.vertices = [
-            -0.5,  0.5, 0,
-            -0.5, -0.5, 0,
-             0.5, -0.5, 0
+                0, 0.5, 0,
+              0.5, 0,   0,
+             -0.5, 0,   0
         ];
         this.indices = [0, 1, 2];
+        this.primitiveType = 'triangle';
     }
 }
