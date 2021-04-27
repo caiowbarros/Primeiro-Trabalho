@@ -68,14 +68,14 @@ class Point extends Scene {
 }
 
 class Rectangle extends Scene {
-    constructor(gl, program) {
+    constructor(gl, program, x, y) {
         super(gl, program);
 
         this.vertices = [
-            -0.5,  0.5, 0,
-            -0.5, -0.5, 0,
-             0.5, -0.5, 0,
-             0.5,  0.5, 0
+            x-0.5, y+0.5, 0,
+            x-0.5, y-0.5, 0,
+            x+0.5, y-0.5, 0,
+            x+0.5, y+0.5, 0
         ];
         this.indices = [0, 1, 2, 0, 2, 3];
     }

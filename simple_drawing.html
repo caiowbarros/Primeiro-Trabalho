@@ -132,11 +132,15 @@
       // Call the functions in an appropriate order
       initProgram();
 
-      // For testing
-      /*primitiveType = "triangle";
-      var shape = new Triangle(gl, program);
-      shape.initBuffer();
-      shape.draw(primitiveType);*/
+      interaction.eventListeners.click = listeners.pointCreationMouseClick;
+      interaction.eventListeners.move = listeners.mouseMove;
+      interaction.eventListeners.mouseUp = listeners.mouseUp;
+      interaction.eventListeners.mouseDown = listeners.mouseDown;
+
+      canvas.addEventListener('mouseup',interaction.eventListeners.mouseUp,false);
+      canvas.addEventListener('mousedown',interaction.eventListeners.mouseDown,false);
+      canvas.addEventListener('mousemove',interaction.eventListeners.move, false);
+      canvas.addEventListener('click', interaction.eventListeners.click, false);
     }
 
     // Create GUI
