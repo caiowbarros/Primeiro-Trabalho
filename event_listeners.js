@@ -141,7 +141,9 @@ function removeAllListeners(canvas, interaction) {
 
       var index = scene.shapeList.length - 1;
       var rectangle = scene.shapeList[index];
-      rectangle.setVertices(x, y);
+      rectangle.x2 = x;
+      rectangle.y2 = y;
+      rectangle.setVertices();
 
       removeAllListeners(canvas, interaction);
       interaction.eventListeners.click = listeners.mouseClick;
