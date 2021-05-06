@@ -66,10 +66,10 @@ class Shape {
                 gl.drawElements(gl.POINTS, this.indices.length, gl.UNSIGNED_SHORT, 0);
             case 'rectangle':
                 gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
-                //gl.drawArrays(gl.TRIANGLES, this.vertices[0], this.vertices.length);
             case 'triangle':
                 gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
-                //gl.drawArrays(gl.TRIANGLES, this.vertices[0], this.vertices.length);
+            case 'polygon':
+                gl.drawElements(gl.TRIANGLE_FAN, this.indices.length, gl.UNSIGNED_SHORT, 0);
             default:
                 break;
         }  
@@ -104,7 +104,9 @@ class Point extends Shape {
 
     setVertices() {
         this.transformToClipSpace();
-        this.vertices = [x, y, 0];
+        this.vertices = [this.x, this.y, 0];
+        console.log(this.x);
+        console.log(this.y);
     }
 }
 
@@ -182,7 +184,7 @@ class Polygon extends Shape {
         this.vertices = [];
         this.addVertex(x, y);
         this.indices = [];
-        this.primitiveType = 'triangle';
+        this.primitiveType = 'polygon';
     }
 
     addVertex(x, y) {

@@ -103,6 +103,7 @@ function removeAllListeners(canvas, interaction) {
 
       var id = scene.shapeList.lenght;
       var point = new Point(id, gl, program, x, y);
+      point.setVertices();
       scene.push(point);
 
       scene.render();
@@ -146,7 +147,7 @@ function removeAllListeners(canvas, interaction) {
       rectangle.setVertices();
 
       removeAllListeners(canvas, interaction);
-      interaction.eventListeners.click = listeners.mouseClick;
+      interaction.eventListeners.click = listeners.rectangleCreationMouseClick;
       interaction.eventListeners.move = listeners.mouseMove;
       interaction.eventListeners.mouseup = listeners.mouseUp;
       interaction.eventListeners.mousedown = listeners.mouseDown;
@@ -215,7 +216,7 @@ function removeAllListeners(canvas, interaction) {
       triangle.setVertices();
 
       removeAllListeners(canvas, interaction);
-      interaction.eventListeners.click = listeners.mouseClick;
+      interaction.eventListeners.click = listeners.triangleCreationMouseClick;
       interaction.eventListeners.move = listeners.mouseMove;
       interaction.eventListeners.mouseup = listeners.mouseUp;
       interaction.eventListeners.mousedown = listeners.mouseDown;
