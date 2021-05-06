@@ -15,6 +15,12 @@ class Scene {
             this.shapeList[i].draw(this.shapeList[i].primitiveType);
         }
     }
+
+    clear() {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+        this.shapeList = [];
+    }
 }
 
 class Shape {
@@ -91,43 +97,128 @@ class Point extends Shape {
 }
 
 class Rectangle extends Shape {
-    constructor(id, gl, program, x, y) {
+    constructor(id, gl, program, x1, y1, x2, y2) {
         super(gl, program);
 
         this.id = id;
-        /*this.vertices = [
-            -0.5,  0.5, 0,
-            -0.5, -0.5, 0,
-             0.5, -0.5, 0,
-             0.5,  0.5, 0
-        ];*/
-        this.vertices = [
-            x, y,
-            -0.5, -0.5,
-             0.5, -0.5,
-             0.5,  0.5
-        ];
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+
+        this.vertices = [];
         this.indices = [0, 1, 2, 0, 2, 3];
         this.primitiveType = 'rectangle';
+    }
+
+    transformToClipSpace(x1, y1, x2, y2) {
+        if (x1 < 600) {
+            this.x1 = -(0.5*x1) / 300;
+        } else if (x1 > 600) {
+            this.x1 = (0.5*x1) / 300;
+        } else {
+            this.x1 = 0;
+        }
+        if (y1 < 300) {
+            this.y1 = (0.5*y1) / 150;
+        } else if (y1 > 300) {
+            this.y1 = -(0.5*y1) / 150;
+        } else {
+            this.y1 = 0;
+        }
+        if (x2 < 600) {
+            this.x2 = -(0.5*x2) / 300;
+        } else if (x2 > 600) {
+            this.x2 = (0.5*x2) / 300;
+        } else {
+            this.x2 = 0;
+        }
+        if (y2 < 300) {
+            this.y2 = (0.5*y2) / 150;
+        } else if (y2 > 300) {
+            this.y2 = -(0.5*y2) / 150;
+        } else {
+            this.y2 = 0;
+        }
+    }
+
+    setVertices(x, y) {
+        this.transformToClipSpace(this.x1, this.y1, this.x2, this.y2);
+        this.vertices = [
+            this.x1, this.y1,
+            this.x1, this.y2,
+            this.x2, this.y2,
+            this.x2, this.y1
+        ];
     }
 }
 
 class Triangle extends Shape {
-    constructor(id, gl, program) {
+    constructor(id, gl, program, x1, y1, x2, y2, x3, y3) {
         super(gl, program);
 
         this.id = id;
-        /*this.vertices = [
-            -0.25,  0.25, 0,
-            -0.25, -0.25, 0,
-             0.25, -0.25, 0
-        ];*/
-        this.vertices = [
-                0, 0.5, 0,
-              0.5, 0,   0,
-             -0.5, 0,   0
-        ];
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+        this.x3 = x3;
+        this.y3 = y3;
+        this.vertices = [];
         this.indices = [0, 1, 2];
         this.primitiveType = 'triangle';
+    }
+
+    transformToClipSpace() {
+        if (x1 < 600) {
+            this.x1 = -(0.5*x1) / 300;
+        } else if (x1 > 600) {
+            this.x1 = (0.5*x1) / 300;
+        } else {
+            this.x1 = 0;
+        }
+        if (y1 < 300) {
+            this.y1 = (0.5*y1) / 150;
+        } else if (y1 > 300) {
+            this.y1 = -(0.5*y1) / 150;
+        } else {
+            this.y1 = 0;
+        }
+        if (x2 < 600) {
+            this.x2 = -(0.5*x2) / 300;
+        } else if (x2 > 600) {
+            this.x2 = (0.5*x2) / 300;
+        } else {
+            this.x2 = 0;
+        }
+        if (y2 < 300) {
+            this.y2 = (0.5*y2) / 150;
+        } else if (y2 > 300) {
+            this.y2 = -(0.5*y2) / 150;
+        } else {
+            this.y2 = 0;
+        }
+        if (x3 < 600) {
+            this.x3 = -(0.5*x3) / 300;
+        } else if (x3 > 600) {
+            this.x3 = (0.5*x3) / 300;
+        } else {
+            this.x3 = 0;
+        }
+        if (y3 < 300) {
+            this.y3 = (0.5*y3) / 150;
+        } else if (y3 > 300) {
+            this.y3 = -(0.5*y3) / 150;
+        } else {
+            this.y3 = 0;
+        }
+    }
+
+    setVertices() {
+        this.vertices = [
+            this.x1, this.y1, 
+            this.x2, this.y2,
+            this.x3, this.y3
+        ];
     }
 }

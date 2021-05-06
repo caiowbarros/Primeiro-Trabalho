@@ -111,24 +111,6 @@ function removeAllListeners(canvas, interaction) {
       scene.render();
     }
 
-    this.rectangleCreationMouseMove = function rectangleCreationMouseMove(event) {
-      /*
-      var offsetLeft = canvas.offsetLeft;
-      var offsetTop = canvas.offsetTop;
-
-      var x = event.pageX - offsetLeft,
-          y = event.pageY - offsetTop;
-
-      var width = properties.lineWidth;
-      var index = shapeList.size - 1;
-      var rectangle = shapeList.list[index];
-      rectangle.x1 = x;
-      rectangle.y1 = y;
-
-      render(canvas, shapeList);
-      */
-    }
-
     this.rectangleCreationMouseClick = function rectangleCreationMouseClick(event) {
       var offsetLeft = canvas.offsetLeft;
       var offsetTop = canvas.offsetTop;
@@ -138,64 +120,41 @@ function removeAllListeners(canvas, interaction) {
 
       // var color = getColor(properties.foregroundColor);
       // var borderColor = getColor(properties.borderColor);
-
       // var width = properties.lineWidth;
 
-      var id = scene.shapeList.size;
-      // var rectangle = new Rectangle(id, PrimitiveType.RECTANGLE, color, borderColor, x, y, x, y, width);
-      var rectangle = new Rectangle(id, gl, program, x, y);
-      // shapeList.push(rectangle);
-
-      //removeAllListeners(canvas, interaction);
-      //interaction.eventListeners.click = listeners.rectangleCloseMouseClick;
-      //interaction.eventListeners.move = listeners.rectangleCreationMouseMove;
-      //interaction.eventListeners.mouseup = listeners.mouseUp;
-      //interaction.eventListeners.mousedown = listeners.mouseDown;
-      //interaction.eventListeners.dblClick = undefined;
-      //addAllListeners(canvas, interaction);
-        
+      var id = scene.shapeList.length;
+      var rectangle = new Rectangle(id, gl, program, x, y, x, y);
       scene.push(rectangle);
-      scene.render();
-      
-    }
-
-    this.rectangleCloseMouseClick = function rectangleCloseMouseClick(event) {
-      /*
-      var offsetLeft = canvas.offsetLeft;
-      var offsetTop = canvas.offsetTop;
-
-      var x = event.pageX - offsetLeft,
-          y = event.pageY - offsetTop;
-
-      var index = shapeList.size - 1;
-      var rectangle = shapeList.list[index];
-      rectangle.x1 = x;
-      rectangle.y1 = y;
 
       removeAllListeners(canvas, interaction);
       interaction.eventListeners.click = listeners.rectangleCloseMouseClick;
-      interaction.eventListeners.move = listeners.rectangleCreationMouseMove;
+      interaction.eventListeners.move = listeners.mouseMove;
       interaction.eventListeners.mouseup = listeners.mouseUp;
       interaction.eventListeners.mousedown = listeners.mouseDown;
       interaction.eventListeners.dblClick = undefined;
       addAllListeners(canvas, interaction);
-      */
     }
 
-    this.triangleCreationMouseMove = function triangleCreationMouseMove(event) {
+    this.rectangleCloseMouseClick = function rectangleCloseMouseClick(event) {
       var offsetLeft = canvas.offsetLeft;
       var offsetTop = canvas.offsetTop;
 
       var x = event.pageX - offsetLeft,
           y = event.pageY - offsetTop;
 
-      var width = properties.lineWidth;
-      var index = shapeList.size - 1;
-      var rectangle = shapeList.list[index];
-      triangle.x1 = x;
-      triangle.y1 = y;
+      var index = scene.shapeList.length - 1;
+      var rectangle = scene.shapeList[index];
+      rectangle.setVertices(x, y);
 
-      render(canvas, shapeList);
+      removeAllListeners(canvas, interaction);
+      interaction.eventListeners.click = listeners.mouseClick;
+      interaction.eventListeners.move = listeners.mouseMove;
+      interaction.eventListeners.mouseup = listeners.mouseUp;
+      interaction.eventListeners.mousedown = listeners.mouseDown;
+      interaction.eventListeners.dblClick = undefined;
+      addAllListeners(canvas, interaction);
+
+      scene.render();
     }
 
     this.triangleCreationMouseClick = function triangleCreationMouseClick(event) {
@@ -207,25 +166,40 @@ function removeAllListeners(canvas, interaction) {
 
       // var color = getColor(properties.foregroundColor);
       // var borderColor = getColor(properties.borderColor);
-
       // var width = properties.lineWidth;
 
-      var id = scene.shapeList.size;
-      // var triangle = new Triangle(id, PrimitiveType.TRIANGLE, color, borderColor, x, y, x, y, width);
-      // shapeList.push(triangle);
-
-      // removeAllListeners(canvas, interaction);
-      // interaction.eventListeners.click = listeners.rectangleCloseMouseClick;
-      // interaction.eventListeners.move = listeners.rectangleCreationMouseMove;
-      // interaction.eventListeners.mouseup = listeners.mouseUp;
-      // interaction.eventListeners.mousedown = listeners.mouseDown;
-      // interaction.eventListeners.dblClick = undefined;
-
-      // addAllListeners(canvas, interaction);
-
-      var triangle = new Triangle(id, gl, program);
+      var id = scene.shapeList.length;
+      var triangle = new Triangle(id, gl, program, x, y, x, y, x, y);
       scene.push(triangle);
-      scene.render();
+
+      removeAllListeners(canvas, interaction);
+      interaction.eventListeners.click = listeners.triangleAddVertexMouseClick;
+      interaction.eventListeners.move = listeners.mouseMove;
+      interaction.eventListeners.mouseup = listeners.mouseUp;
+      interaction.eventListeners.mousedown = listeners.mouseDown;
+      interaction.eventListeners.dblClick = undefined;
+      addAllListeners(canvas, interaction);
+    }
+
+    this.triangleAddVertexMouseClick = function triangleAddVertexMouseClick(event) {
+      var offsetLeft = canvas.offsetLeft;
+      var offsetTop = canvas.offsetTop;
+
+      var x = event.pageX - offsetLeft,
+          y = event.pageY - offsetTop;
+
+      var index = scene.shapeList.length - 1;
+      var triangle = scene.shapeList[index];
+      triangle.x2 = x;
+      triangle.y2 = y;
+
+      removeAllListeners(canvas, interaction);
+      interaction.eventListeners.click = listeners.triangleCloseMouseClick;
+      interaction.eventListeners.move = listeners.mouseMove;
+      interaction.eventListeners.mouseup = listeners.mouseUp;
+      interaction.eventListeners.mousedown = listeners.mouseDown;
+      interaction.eventListeners.dblClick = undefined;
+      addAllListeners(canvas, interaction);
     }
     
     this.triangleCloseMouseClick = function triangleCloseMouseClick(event) {
@@ -235,19 +209,21 @@ function removeAllListeners(canvas, interaction) {
       var x = event.pageX - offsetLeft,
           y = event.pageY - offsetTop;
 
-      var index = shapeList.size - 1;
-      var triangle = shapeList.list[index];
-      triangle.x1 = x;
-      triangle.y1 = y;
+      var index = scene.shapeList.length - 1;
+      var triangle = scene.shapeList[index];
+      triangle.x3 = x;
+      triangle.y3 = y;
+      triangle.setVertices();
 
       removeAllListeners(canvas, interaction);
-      interaction.eventListeners.click = listeners.rectangleCloseMouseClick;
-      interaction.eventListeners.move = listeners.rectangleCreationMouseMove;
+      interaction.eventListeners.click = listeners.mouseClick;
+      interaction.eventListeners.move = listeners.mouseMove;
       interaction.eventListeners.mouseup = listeners.mouseUp;
       interaction.eventListeners.mousedown = listeners.mouseDown;
       interaction.eventListeners.dblClick = undefined;
-
       addAllListeners(canvas, interaction);
+
+      scene.render();
     }
 
   }

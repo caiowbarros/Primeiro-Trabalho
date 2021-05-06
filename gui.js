@@ -143,8 +143,7 @@ function createGUI(info, tools, file, properties, interaction, canvas) {
         shapeList.list.length = 0;
         render(canvas, shapeList);
         */
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);       
+        scene.clear();   
     }
 
     this.delete = function() {
