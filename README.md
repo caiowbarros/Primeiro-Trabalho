@@ -1,5 +1,5 @@
 ﻿# Primeiro Trabalho
- Primeiro trabalho feito para a matéria de Tópicas Especiais em Sistemas de Programação III
+ Primeiro trabalho feito para a matéria de Tópicos Especiais em Sistemas de Programação III
 # Instruções
 - Alterar o código disponibilizado para renderizar as primitivas utilizando WebGL ao invés de HTML5
   - Implementar o descritor de cena
