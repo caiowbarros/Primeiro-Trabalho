@@ -225,4 +225,70 @@ function removeAllListeners(canvas, interaction) {
       scene.render();
     }
 
+    this.polygonCreationMouseClick = function polygonCreationMouseClick(event) {
+      var offsetLeft = canvas.offsetLeft;
+      var offsetTop = canvas.offsetTop;
+
+      var x = event.pageX - offsetLeft,
+          y = event.pageY - offsetTop;
+
+      // var color = getColor(properties.foregroundColor);
+      // var borderColor = getColor(properties.borderColor);
+      // var width = properties.lineWidth;
+
+      var id = scene.shapeList.length;
+      var polygon = new Polygon(id, gl, program, x, y);
+      scene.push(polygon);
+
+      removeAllListeners(canvas, interaction);
+      interaction.eventListeners.click = listeners.polygonAddVertexMouseClick;
+      interaction.eventListeners.move = listeners.mouseMove;
+      interaction.eventListeners.mouseup = listeners.mouseUp;
+      interaction.eventListeners.mousedown = listeners.mouseDown;
+      interaction.eventListeners.dblClick = undefined;
+      addAllListeners(canvas, interaction);
+    }
+
+    this.polygonAddVertexMouseClick = function polygonAddVertexMouseClick(event) {
+      var offsetLeft = canvas.offsetLeft;
+      var offsetTop = canvas.offsetTop;
+
+      var x = event.pageX - offsetLeft,
+          y = event.pageY - offsetTop;
+
+      var index = scene.shapeList.length - 1;
+      var polygon = scene.shapeList[index];
+      polygon.addVertex(x, y);
+
+      removeAllListeners(canvas, interaction);
+      interaction.eventListeners.click = listeners.polygonAddVertexMouseClick;
+      interaction.eventListeners.move = listeners.mouseMove;
+      interaction.eventListeners.mouseup = listeners.mouseUp;
+      interaction.eventListeners.mousedown = listeners.mouseDown;
+      interaction.eventListeners.dblClick = listeners.polygonCloseMouseDblClick;
+      addAllListeners(canvas, interaction);
+    }
+
+    this.polygonCloseMouseDblClick = function polygonCloseMouseDblClick(event) {
+      var offsetLeft = canvas.offsetLeft;
+      var offsetTop = canvas.offsetTop;
+
+      var x = event.pageX - offsetLeft,
+          y = event.pageY - offsetTop;
+
+      var index = scene.shapeList.length - 1;
+      var polygon = scene.shapeList[index];
+      polygon.addVertex(x, y);
+
+      removeAllListeners(canvas, interaction);
+      interaction.eventListeners.click = listeners.mouseClick;
+      interaction.eventListeners.move = listeners.mouseMove;
+      interaction.eventListeners.mouseup = listeners.mouseUp;
+      interaction.eventListeners.mousedown = listeners.mouseDown;
+      interaction.eventListeners.dblClick = undefined;
+      addAllListeners(canvas, interaction);
+
+      scene.render();
+    }
+
   }

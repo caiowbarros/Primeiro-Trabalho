@@ -21,7 +21,7 @@ function createGUI(info, tools, file, properties, interaction, canvas) {
     var borderColorController = propertiesFolder.addColor(properties, 'borderColor');
     var pointSizeController = propertiesFolder.add(properties, 'pointSize', 1, 100);
     var lineWidthController = propertiesFolder.add(properties, 'lineWidth', 1, 50);
-    var primitiveController = propertiesFolder.add(properties, 'primitiveType', ['point', 'rectangle', 'triangle']);
+    var primitiveController = propertiesFolder.add(properties, 'primitiveType', ['point', 'rectangle', 'triangle', 'polygon']);
 
     primitiveController.onChange(
       function(value) {
@@ -33,6 +33,8 @@ function createGUI(info, tools, file, properties, interaction, canvas) {
           primitiveType = "rectangle";
         } else if (value == 'triangle') {
           primitiveType = "triangle";
+        } else if (value == 'polygon') {
+          primitiveType = "polygon";
         }
 
         addAllListeners(canvas, interaction);
@@ -120,15 +122,15 @@ function createGUI(info, tools, file, properties, interaction, canvas) {
       switch (primitiveType) {
         case "point":
           interaction.eventListeners.click = listeners.pointCreationMouseClick;
-          //interaction.eventListeners.move = listeners.mouseMove;
           break;
         case "rectangle":
           interaction.eventListeners.click = listeners.rectangleCreationMouseClick;
-          //interaction.eventListeners.move = listeners.mouseMove;
           break;
         case "triangle":
           interaction.eventListeners.click = listeners.triangleCreationMouseClick;
-          //interaction.eventListeners.move = listeners.mouseMove;
+          break;
+        case "polygon":
+          interaction.eventListeners.click = listeners.polygonCreationMouseClick;
           break;
       }
 
@@ -139,10 +141,6 @@ function createGUI(info, tools, file, properties, interaction, canvas) {
     };
 
     this.clear = function() {
-        /*
-        shapeList.list.length = 0;
-        render(canvas, shapeList);
-        */
         scene.clear();   
     }
 

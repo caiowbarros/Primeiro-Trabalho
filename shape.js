@@ -174,3 +174,20 @@ class Triangle extends Shape {
         ];
     }
 }
+
+class Polygon extends Shape {
+    constructor(id, gl, program, x, y) {
+        super(gl, program);
+
+        this.vertices = [];
+        this.addVertex(x, y);
+        this.indices = [];
+        this.primitiveType = 'triangle';
+    }
+
+    addVertex(x, y) {
+        this.vertices.push(x / 1200 * 2 - 1);
+        this.vertices.push(y / 600 * - 2 + 1);
+        this.vertices.push(0);
+    }
+}
