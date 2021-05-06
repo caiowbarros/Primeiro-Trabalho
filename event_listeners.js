@@ -245,7 +245,7 @@ function removeAllListeners(canvas, interaction) {
       interaction.eventListeners.move = listeners.mouseMove;
       interaction.eventListeners.mouseup = listeners.mouseUp;
       interaction.eventListeners.mousedown = listeners.mouseDown;
-      interaction.eventListeners.dblClick = undefined;
+      interaction.eventListeners.dblClick = listeners.polygonCloseMouseDoubleClick;
       addAllListeners(canvas, interaction);
     }
 
@@ -259,17 +259,20 @@ function removeAllListeners(canvas, interaction) {
       var index = scene.shapeList.length - 1;
       var polygon = scene.shapeList[index];
       polygon.addVertex(x, y);
+      polygon.setIndices();
 
       removeAllListeners(canvas, interaction);
       interaction.eventListeners.click = listeners.polygonAddVertexMouseClick;
       interaction.eventListeners.move = listeners.mouseMove;
       interaction.eventListeners.mouseup = listeners.mouseUp;
       interaction.eventListeners.mousedown = listeners.mouseDown;
-      interaction.eventListeners.dblClick = listeners.polygonCloseMouseDblClick;
+      interaction.eventListeners.dblClick = listeners.polygonCloseMouseDoubleClick;
       addAllListeners(canvas, interaction);
+      
+      scene.render();
     }
 
-    this.polygonCloseMouseDblClick = function polygonCloseMouseDblClick(event) {
+    this.polygonCloseMouseDoubleClick = function polygonCloseMouseDoubleClick(event) {
       var offsetLeft = canvas.offsetLeft;
       var offsetTop = canvas.offsetTop;
 
@@ -279,6 +282,7 @@ function removeAllListeners(canvas, interaction) {
       var index = scene.shapeList.length - 1;
       var polygon = scene.shapeList[index];
       polygon.addVertex(x, y);
+      polygon.setVertices();
 
       removeAllListeners(canvas, interaction);
       interaction.eventListeners.click = listeners.mouseClick;

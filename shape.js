@@ -190,4 +190,16 @@ class Polygon extends Shape {
         this.vertices.push(y / 600 * - 2 + 1);
         this.vertices.push(0);
     }
+
+    setIndices() {
+        var contador = 0;
+        for (var i=0; i < this.vertices.length/3; i++) {
+            this.indices.push(i);
+            contador++;
+            if (contador == 3) {
+                i--;
+                contador = 0;
+            }
+        }
+    }
 }
