@@ -101,13 +101,10 @@ function removeAllListeners(canvas, interaction) {
       // var color = getColor(properties.foregroundColor);
       // var borderColor = getColor(properties.borderColor);
 
-      var id = scene.shapeList.size;
-      // var point = new Point(id,PrimitiveType.POINT,color,borderColor,x,y,properties.pointSize);
-      // shapeList.push(point);
-      // render(canvas, shapeList);
-
-      var point = new Point(id, gl, program);
+      var id = scene.shapeList.lenght;
+      var point = new Point(id, gl, program, x, y);
       scene.push(point);
+
       scene.render();
     }
 

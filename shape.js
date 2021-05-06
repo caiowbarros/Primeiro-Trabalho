@@ -86,11 +86,11 @@ class Shape {
 }
 
 class Point extends Shape {
-    constructor(id, gl, program) {
+    constructor(id, gl, program, x, y) {
         super(gl, program);
 
         this.id = id;
-        this.vertices = [0, 0, 0];
+        this.vertices = [x, y];
         this.indices = [0];
         this.primitiveType = 'point';
     } 
