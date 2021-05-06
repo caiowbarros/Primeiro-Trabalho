@@ -29,11 +29,12 @@
 
     // Supplied vertex position attribute
     in vec3 aVertexPosition;
+    in float vSize;
 
     void main(void) {
       // Simply set the position in clipspace coordinates
       gl_Position = vec4(aVertexPosition, 1.0);
-      gl_PointSize = 8.0;
+      gl_PointSize = vSize;
     }
   </script>
 

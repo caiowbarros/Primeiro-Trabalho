@@ -19,7 +19,7 @@ function createGUI(info, tools, file, properties, interaction, canvas) {
     var propertiesFolder = gui.addFolder('Properties');
     var colorController = propertiesFolder.addColor(properties, 'foregroundColor');
     var borderColorController = propertiesFolder.addColor(properties, 'borderColor');
-    var pointSizeController = propertiesFolder.add(properties, 'pointSize', 1, 100);
+    var pointSizeController = propertiesFolder.add(properties, 'pointSize', 1, 10);
     var lineWidthController = propertiesFolder.add(properties, 'lineWidth', 1, 50);
     var primitiveController = propertiesFolder.add(properties, 'primitiveType', ['point', 'rectangle', 'triangle', 'polygon']);
 
@@ -66,6 +66,12 @@ function createGUI(info, tools, file, properties, interaction, canvas) {
         var color = getColor(properties.borderColor);
         // shape.borderColor = color;
         // render(canvas, shapeList);
+      }
+    );
+
+    pointSizeController.onChange(
+      function(value) {
+        properties.pointSize = [value];
       }
     );
 

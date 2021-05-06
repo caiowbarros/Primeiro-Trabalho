@@ -27,6 +27,7 @@ class Shape {
     constructor(gl, program) {
         this.VAO;
         this.VBO;
+        this.sVBO;
         this.IBO;
         this.program = program;
         this.gl = gl;
@@ -44,6 +45,14 @@ class Shape {
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
         gl.enableVertexAttribArray(this.program.aVertexPosition);
         gl.vertexAttribPointer(this.program.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+
+        // Point size
+        this.sVBO = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.sVBO);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(properties.pointSize), gl.STATIC_DRAW);
+        var vSize = gl.getAttribLocation(this.program, "vSize");
+        gl.vertexAttribPointer(vSize, 1, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(vSize);
         
         // IBO
         this.IBO = gl.createBuffer();
@@ -105,8 +114,6 @@ class Point extends Shape {
     setVertices() {
         this.transformToClipSpace();
         this.vertices = [this.x, this.y, 0];
-        console.log(this.x);
-        console.log(this.y);
     }
 }
 
