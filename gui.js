@@ -46,7 +46,7 @@ function createGUI(info, tools, file, properties, interaction, canvas) {
     colorController.onChange(
       function(value) {
         properties.color = value;
-        colorArray = [properties.color[0] / 255, properties.color[1] / 255, properties.color[2] / 255];
+        colorArray = [properties.color[0] / 255, properties.color[1] / 255, properties.color[2] / 255, 1];
         // var shape = shapeList.selectedShape;
         var shape = primitiveType;
         if (shape == undefined) {
