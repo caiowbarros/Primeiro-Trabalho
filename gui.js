@@ -182,8 +182,8 @@ function createGUI(info, tools, file, properties, interaction, canvas) {
   }
 
   function Properties() {
-    this.foregroundColor = [0, 0, 0];
-    this.borderColor = [0, 0, 0];
+    this.foregroundColor = [255, 0, 0];
+    this.borderColor = [255, 0, 0];
     this.pointSize = 8;
     this.lineWidth = 2;
     this.primitiveType = 'point';
