@@ -21,7 +21,7 @@ function createGUI(info, tools, file, properties, interaction, canvas) {
     var borderColorController = propertiesFolder.addColor(properties, 'borderColor');
     var pointSizeController = propertiesFolder.add(properties, 'pointSize', 1, 10);
     var lineWidthController = propertiesFolder.add(properties, 'lineWidth', 1, 50);
-    var primitiveController = propertiesFolder.add(properties, 'primitiveType', ['point', 'rectangle', 'triangle', 'polygon']);
+    var primitiveController = propertiesFolder.add(properties, 'primitiveType', ['point', 'rectangle', 'triangle', 'polygon', 'circle']);
 
     primitiveController.onChange(
       function(value) {
@@ -35,6 +35,8 @@ function createGUI(info, tools, file, properties, interaction, canvas) {
           primitiveType = "triangle";
         } else if (value == 'polygon') {
           primitiveType = "polygon";
+        } else if (value == 'circle') {
+          primitiveType = "circle";
         }
 
         addAllListeners(canvas, interaction);
@@ -44,12 +46,13 @@ function createGUI(info, tools, file, properties, interaction, canvas) {
     colorController.onChange(
       function(value) {
         properties.color = value;
+        colorArray = [properties.color[0] / 255, properties.color[1] / 255, properties.color[2] / 255];
         // var shape = shapeList.selectedShape;
         var shape = primitiveType;
         if (shape == undefined) {
           return;
         }
-        var color = getColor(properties.foregroundColor);
+        // var color = getColor(properties.foregroundColor);
         // shape.color = color;
         // render(canvas, shapeList);
       }
@@ -138,8 +141,12 @@ function createGUI(info, tools, file, properties, interaction, canvas) {
         case "polygon":
           interaction.eventListeners.click = listeners.polygonCreationMouseClick;
           break;
+        case "circle":
+          interaction.eventListeners.click = listeners.circleCreationMouseClick;
+          break;
       }
 
+      interaction.eventListeners.move = listeners.mouseMove;
       interaction.eventListeners.mouseup = listeners.mouseUp;
       interaction.eventListeners.mousedown = listeners.mouseDown;
       interaction.eventListeners.dblClick = undefined;

@@ -30,11 +30,14 @@
     // Supplied vertex position attribute
     in vec3 aVertexPosition;
     in float vSize;
+    in vec4 aVertexColor;
+    out lowp vec4 vColor;
 
     void main(void) {
       // Simply set the position in clipspace coordinates
       gl_Position = vec4(aVertexPosition, 1.0);
       gl_PointSize = vSize;
+      vColor = aVertexColor;
     }
   </script>
 
@@ -45,10 +48,11 @@
 
     // Color that is the result of this shader
     out vec4 fragColor;
+    in lowp vec4 vColor;
 
     void main(void) {
       // Set the result as red
-      fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+      fragColor = vColor;
     }
   </script>
 
@@ -59,7 +63,8 @@
     // across the application
     let gl,
         program,
-        primitiveType;
+        primitiveType,
+        colorArray;
 
     // Given an id, extract the content's of a shader script
     // from the DOM and return the compiled shader

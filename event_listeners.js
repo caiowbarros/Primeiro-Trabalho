@@ -296,4 +296,52 @@ function removeAllListeners(canvas, interaction) {
       scene.render();
     }
 
+    this.circleCreationMouseClick = function circleCreationMouseClick(event) {
+      var offsetLeft = canvas.offsetLeft;
+      var offsetTop = canvas.offsetTop;
+
+      var x = event.pageX - offsetLeft,
+          y = event.pageY - offsetTop;
+
+      // var color = getColor(properties.foregroundColor);
+      // var borderColor = getColor(properties.borderColor);
+      // var width = properties.lineWidth;
+
+      var id = scene.shapeList.length;
+      var circle = new Circle(id, gl, program, x, y);
+      scene.push(circle);
+
+      removeAllListeners(canvas, interaction);
+      interaction.eventListeners.click = listeners.circleCloseMouseClick;
+      interaction.eventListeners.move = listeners.mouseMove;
+      interaction.eventListeners.mouseup = listeners.mouseUp;
+      interaction.eventListeners.mousedown = listeners.mouseDown;
+      interaction.eventListeners.dblClick = undefined;
+      addAllListeners(canvas, interaction);
+    }
+
+    this.circleCloseMouseClick = function circleCloseMouseClick(event) {
+      var offsetLeft = canvas.offsetLeft;
+      var offsetTop = canvas.offsetTop;
+
+      var x = event.pageX - offsetLeft,
+          y = event.pageY - offsetTop;
+
+      var index = scene.shapeList.length - 1;
+      var circle = scene.shapeList[index];
+      circle.rx = x;
+      circle.ry = y;
+      circle.setVertices();
+
+      removeAllListeners(canvas, interaction);
+      interaction.eventListeners.click = listeners.circleCreationMouseClick;
+      interaction.eventListeners.move = listeners.mouseMove;
+      interaction.eventListeners.mouseup = listeners.mouseUp;
+      interaction.eventListeners.mousedown = listeners.mouseDown;
+      interaction.eventListeners.dblClick = undefined;
+      addAllListeners(canvas, interaction);
+
+      scene.render();
+    }
+
   }
